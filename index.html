@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jonathan Whitehouse — IT Director</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #ffffff;
+      --surface:   #f7f7f6;
+      --border:    #e8e8e6;
+      --text:      #1a1a1a;
+      --muted:     #6b6b6b;
+      --accent:    #2563eb;
+      --accent-lt: #eff4ff;
+      --radius:    8px;
+      --max-w:     740px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    /* ── Layout ── */
+    .container { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+    section { padding: 72px 0; }
+    section + section { border-top: 1px solid var(--border); }
+
+    /* ── Nav ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+    }
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      position: relative;
+    }
+    .nav-logo {
+      font-weight: 700; font-size: 1rem;
+      color: var(--text); text-decoration: none;
+      letter-spacing: -0.02em; white-space: nowrap;
+    }
+    .nav-links {
+      display: flex; gap: 24px; list-style: none;
+    }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-size: 0.85rem; transition: color 0.15s; white-space: nowrap;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* Hamburger */
+    .nav-toggle {
+      display: none; flex-direction: column;
+      justify-content: center; gap: 5px;
+      background: none; border: none;
+      cursor: pointer; padding: 4px; flex-shrink: 0;
+    }
+    .nav-toggle span {
+      display: block; width: 22px; height: 2px;
+      background: var(--text); border-radius: 2px;
+      transition: transform 0.22s ease, opacity 0.22s ease;
+    }
+    .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ── Hero ── */
+    #hero { padding: 88px 0 72px; border-top: none; }
+    .hero-inner { display: flex; align-items: center; gap: 52px; }
+    .hero-text  { flex: 1; min-width: 0; }
+
+    .hero-photo {
+      flex-shrink: 0; width: 176px; height: 176px;
+      border-radius: 50%; overflow: hidden;
+      border: 3px solid var(--border); background: var(--surface);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hero-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .avatar-placeholder {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 6px;
+      color: var(--muted); font-size: 0.7rem; text-align: center;
+      padding: 12px; cursor: pointer; width: 100%; height: 100%;
+      transition: background 0.15s;
+    }
+    .avatar-placeholder:hover { background: var(--border); }
+    .avatar-placeholder svg { width: 48px; height: 48px; opacity: 0.35; }
+    #photo-input { display: none; }
+
+    .hero-label {
+      display: inline-block; font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--accent); background: var(--accent-lt);
+      padding: 4px 10px; border-radius: 20px; margin-bottom: 18px;
+    }
+    #hero h1 {
+      font-size: clamp(1.8rem, 4.5vw, 2.9rem);
+      font-weight: 800; letter-spacing: -0.03em;
+      line-height: 1.15; margin-bottom: 18px;
+    }
+    #hero .subtitle {
+      font-size: 1.05rem; color: var(--muted);
+      max-width: 520px; margin-bottom: 32px; line-height: 1.65;
+    }
+    .btn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn {
+      display: inline-block; padding: 10px 20px;
+      border-radius: var(--radius); font-size: 0.875rem;
+      font-weight: 600; text-decoration: none;
+      transition: opacity 0.15s, transform 0.1s; cursor: pointer; border: none;
+    }
+    .btn:hover { opacity: 0.82; transform: translateY(-1px); }
+    .btn-primary   { background: var(--accent); color: #fff; }
+    .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+
+    /* ── Section headings ── */
+    .section-label {
+      font-size: 0.73rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--muted); margin-bottom: 6px;
+    }
+    h2 {
+      font-size: 1.45rem; font-weight: 700;
+      letter-spacing: -0.02em; margin-bottom: 16px;
+    }
+
+    /* ── About ── */
+    #about p { color: var(--muted); max-width: 580px; margin-bottom: 14px; line-height: 1.7; }
+
+    /* ── Achievements ── */
+    #achievements { background: var(--surface); }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px; margin-top: 28px;
+    }
+    .stat-card {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 22px 16px; text-align: center;
+    }
+    .stat-number {
+      font-size: 1.6rem; font-weight: 800;
+      letter-spacing: -0.03em; color: var(--accent);
+      line-height: 1.15; margin-bottom: 6px;
+    }
+    .stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.45; }
+
+    /* ── Skills ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px; margin-top: 24px;
+    }
+    .skill-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px;
+    }
+    .skill-card h3 { font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      font-size: 0.73rem; color: var(--muted);
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 20px; padding: 3px 9px;
+    }
+
+    /* ── Experience ── */
+    .timeline { margin-top: 24px; }
+    .timeline-item {
+      display: grid; grid-template-columns: 112px 1fr;
+      gap: 20px; padding: 22px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .timeline-item:last-child { border-bottom: none; }
+    .timeline-date { font-size: 0.78rem; color: var(--muted); padding-top: 3px; line-height: 1.4; }
+    .timeline-content h3 { font-size: 0.975rem; font-weight: 600; margin-bottom: 2px; }
+    .timeline-company { font-size: 0.845rem; color: var(--accent); margin-bottom: 8px; }
+    .timeline-content p { font-size: 0.845rem; color: var(--muted); line-height: 1.65; }
+
+    /* ── Education ── */
+    .edu-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px; margin-top: 24px;
+    }
+    .edu-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 18px;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .edu-icon {
+      flex-shrink: 0; width: 34px; height: 34px;
+      background: var(--accent-lt); border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .edu-icon svg { width: 16px; height: 16px; color: var(--accent); }
+    .edu-body h3 { font-size: 0.855rem; font-weight: 600; margin-bottom: 3px; line-height: 1.35; }
+    .edu-body .edu-org  { font-size: 0.78rem; color: var(--accent); margin-bottom: 2px; }
+    .edu-body .edu-year { font-size: 0.73rem; color: var(--muted); }
+
+    /* ── Contact ── */
+    #contact .lead {
+      color: var(--muted); max-width: 480px;
+      margin-bottom: 28px; line-height: 1.65;
+    }
+    .contact-links { display: flex; flex-wrap: wrap; gap: 10px; }
+    .contact-link {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 16px; border: 1px solid var(--border);
+      border-radius: var(--radius); text-decoration: none;
+      color: var(--text); font-size: 0.845rem; font-weight: 500;
+      background: var(--surface); transition: border-color 0.15s, background 0.15s, color 0.15s;
+    }
+    .contact-link:hover { border-color: var(--accent); background: var(--accent-lt); color: var(--accent); }
+    .contact-link svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+    /* ── Footer ── */
+    footer {
+      padding: 28px 0; border-top: 1px solid var(--border);
+      text-align: center; font-size: 0.78rem; color: var(--muted);
+    }
+
+    /* ══════════════════════════════
+       RESPONSIVE
+    ══════════════════════════════ */
+
+    /* Tablet */
+    @media (max-width: 700px) {
+      .stats-grid  { grid-template-columns: repeat(2, 1fr); }
+      .skills-grid { grid-template-columns: 1fr; }
+      .edu-grid    { grid-template-columns: 1fr; }
+    }
+
+    /* Mobile */
+    @media (max-width: 580px) {
+      section { padding: 48px 0; }
+      #hero   { padding: 56px 0 40px; }
+
+      /* Hamburger */
+      .nav-toggle { display: flex; }
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: calc(100% + 14px);
+        left: -24px; right: -24px;
+        background: var(--bg);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+        flex-direction: column;
+        padding: 14px 24px 18px; gap: 16px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.07);
+        z-index: 200;
+      }
+      .nav-links.open { display: flex; }
+      .nav-links a { font-size: 1rem; }
+
+      /* Hero */
+      .hero-inner { flex-direction: column-reverse; gap: 20px; align-items: flex-start; }
+      .hero-photo { width: 96px; height: 96px; }
+      #hero h1    { font-size: 1.75rem; }
+
+      /* Stats */
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .stat-number { font-size: 1.35rem; }
+
+      /* Timeline */
+      .timeline-item { grid-template-columns: 1fr; gap: 2px; }
+      .timeline-date {
+        font-size: 0.73rem; color: var(--accent);
+        font-weight: 600; padding-top: 0;
+      }
+
+      /* Contact */
+      .contact-links  { flex-direction: column; }
+      .contact-link   { justify-content: center; }
+    }
+
+    /* Small phones */
+    @media (max-width: 380px) {
+      .container  { padding: 0 14px; }
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container">
+      <a class="nav-logo" href="#hero">Jonathan Whitehouse</a>
+      <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#achievements">Achievements</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#education">Education</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section id="hero">
+    <div class="container">
+      <div class="hero-inner">
+        <div class="hero-text">
+          <span class="hero-label">Open to opportunities</span>
+          <h1>Hi, I'm Jonathan —<br>IT Director.</h1>
+          <p class="subtitle">
+            Enterprise transformation leader with 20+ years building IT organisations,
+            delivering ERP programmes, and partnering with executive teams.
+            Based in Raleigh, NC.
+          </p>
+          <div class="btn-group">
+            <a href="#contact" class="btn btn-primary">Get in touch</a>
+            <a href="#experience" class="btn btn-secondary">View my experience</a>
+          </div>
+        </div>
+        <div class="hero-photo">
+          <img id="profile-img" src="" alt="Profile photo" style="display:none;" />
+          <label class="avatar-placeholder" for="photo-input" id="avatar-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            </svg>
+            Click to add photo
+          </label>
+          <input type="file" id="photo-input" accept="image/*" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <div class="container">
+      <p class="section-label">About me</p>
+      <h2>A little background</h2>
+      <p>
+        Technology leader with over 20 years of experience building IT organisations,
+        delivering enterprise transformation, and partnering with executive and board-level
+        leadership. I built the IT function at PMC from the ground up, supporting revenue
+        growth from $30M to $100M through full ERP implementation, cloud migration, and
+        five company-wide strategic programmes.
+      </p>
+      <p>
+        Currently leading a portfolio of regulated system projects at Bioventus, a global
+        medical device company. Equally effective as an in-house IT Director, senior
+        programme leader, or interim resource.
+      </p>
+    </div>
+  </section>
+
+  <!-- Achievements -->
+  <section id="achievements">
+    <div class="container">
+      <p class="section-label">By the numbers</p>
+      <h2>Key achievements</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">$30M→$100M</div>
+          <div class="stat-label">Revenue growth supported by technology roadmap at PMC</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Cloud — all on-premises servers, VPN &amp; AD eliminated across 6 locations</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">12 SaaS</div>
+          <div class="stat-label">Integrations deployed alongside NetSuite at PMC — all configured end-to-end</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">1,500</div>
+          <div class="stat-label">Users across 29 countries on Siebel CRM deployment at Eaton</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">4</div>
+          <div class="stat-label">M&amp;A acquisitions integrated — due diligence through TSA exit</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">⅔ reduction</div>
+          <div class="stat-label">In US Sales Tax credits through Vertex implementation at Bioventus</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills -->
+  <section id="skills">
+    <div class="container">
+      <p class="section-label">What I bring</p>
+      <h2>Skills &amp; expertise</h2>
+      <div class="skills-grid">
+        <div class="skill-card">
+          <h3>ERP, CRM &amp; Cloud</h3>
+          <div class="skill-tags">
+            <span class="tag">NetSuite</span><span class="tag">SAP</span>
+            <span class="tag">Dynamics CRM</span><span class="tag">Siebel CRM</span>
+            <span class="tag">Azure</span><span class="tag">AWS</span><span class="tag">Okta</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <h3>Data, PM &amp; Governance</h3>
+          <div class="skill-tags">
+            <span class="tag">Power BI</span><span class="tag">Power Query</span>
+            <span class="tag">Jira</span><span class="tag">Smartsheet</span>
+            <span class="tag">PMP</span><span class="tag">SOX / GxP / HIPAA</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <h3>IT Leadership</h3>
+          <div class="skill-tags">
+            <span class="tag">IT Strategy &amp; Roadmap</span><span class="tag">Budget to $1M</span>
+            <span class="tag">Vendor Negotiation</span><span class="tag">Team Building</span>
+            <span class="tag">OCM</span>
+          </div>
+        </div>
+        <div class="skill-card">
+          <h3>Programme Delivery</h3>
+          <div class="skill-tags">
+            <span class="tag">M&amp;A IT Integration</span><span class="tag">Cloud Migration</span>
+            <span class="tag">ERP Implementation</span><span class="tag">Change Management</span>
+            <span class="tag">PCI Practitioner</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience -->
+  <section id="experience">
+    <div class="container">
+      <p class="section-label">Where I've worked</p>
+      <h2>Experience</h2>
+      <div class="timeline">
+
+        <div class="timeline-item">
+          <div class="timeline-date">2023 — Present</div>
+          <div class="timeline-content">
+            <h3>Sr. Project Manager (Contract)</h3>
+            <div class="timeline-company">Bioventus LLC · Raleigh, NC</div>
+            <p>Senior project manager at a global medical device company (~$550M revenue). Managing a
+               regulated portfolio across ERP, data, and infrastructure in a SOX, GxP, and HIPAA
+               environment. Built Power BI portfolio dashboards; configured Jira workflow automation;
+               leveraged Microsoft 365 Copilot to reduce administrative overhead. Key wins: NetSuite
+               configured for new surgical plant ahead of facility relocation (Day-one ERP readiness),
+               physician referral portal launched for Bone Stimulation line (30 referrals in pilot),
+               and PNS divestiture completed with zero business interruption.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2022 — 2023</div>
+          <div class="timeline-content">
+            <h3>NetSuite Implementation Consultant</h3>
+            <div class="timeline-company">Independent / Self-Employed · Raleigh, NC</div>
+            <p>Provided NetSuite implementation and optimisation advisory to SME clients while
+               evaluating senior IT leadership opportunities.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2015 — 2022</div>
+          <div class="timeline-content">
+            <h3>IT Director</h3>
+            <div class="timeline-company">PMC Commercial Interiors · Raleigh, NC</div>
+            <p>Appointed IT Director reporting to CEO. Formulated and executed a technology roadmap
+               supporting growth from $30M to $100M. Executed a full cloud migration — eliminated
+               all servers, VPN, and Active Directory; deployed Okta zero-trust across 6 locations.
+               Implemented NetSuite with 12 SaaS integrations. Led five company-wide strategic
+               programmes — OnePMC, Autopilot, QMS, OneTrack, and Service PRO — and managed IT
+               Capex and Opex budgets to $1M.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2011 — 2015</div>
+          <div class="timeline-content">
+            <h3>Business Systems Manager — Sales &amp; Marketing, EMEA</h3>
+            <div class="timeline-company">Eaton Corporation · Leamington Spa, UK</div>
+            <p>Led a remote team of 6 Project Managers and BAs deploying Siebel CRM to 1,500 users
+               across 29 countries. Defined global sales process standards applied across all
+               deployments. Role continued following Eaton's acquisition of Cooper Industries in 2012.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2005 — 2011</div>
+          <div class="timeline-content">
+            <h3>IT Manager, EMEA &amp; APAC / Infrastructure Architect, Global</h3>
+            <div class="timeline-company">Energy Alloys · Sheffield, UK</div>
+            <p>Managed $1M IT budget across 15 global sites; led pre and post-close IT planning for
+               4 acquisition integrations from Day 1 service design through TSA exit. Executed a
+               $1.2M AT&amp;T MPLS network contract via RFP and standardised infrastructure globally.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">Earlier career</div>
+          <div class="timeline-content">
+            <h3>Earlier roles</h3>
+            <div class="timeline-company">Cooper Industries · IMS · GOYH · Freelance</div>
+            <p>Business Systems Manager EMEAI at Cooper Industries — Dynamics CRM to 410 users across
+               10 countries in 16 weeks. NetSuite Consultant (independent). Systems Engineer at
+               International Metal Services. SAP R/3 Trainer, Government Office for Yorkshire.
+               Freelance Digital Consultant (2000–2004).</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Education -->
+  <section id="education">
+    <div class="container">
+      <p class="section-label">Education &amp; certifications</p>
+      <h2>Qualifications</h2>
+      <div class="edu-grid">
+        <div class="edu-card">
+          <div class="edu-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/>
+            </svg>
+          </div>
+          <div class="edu-body">
+            <h3>BA (Hons) Digital Multimedia Design</h3>
+            <div class="edu-org">University of Huddersfield, UK</div>
+            <div class="edu-year">2003</div>
+          </div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+            </svg>
+          </div>
+          <div class="edu-body">
+            <h3>PCI® Practitioner — e-Change® Platform</h3>
+            <div class="edu-org">e-Change® / Organisational Change Management</div>
+            <div class="edu-year">2024</div>
+          </div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/>
+            </svg>
+          </div>
+          <div class="edu-body">
+            <h3>MS Dynamics CRM 2011 — Customization &amp; Configuration</h3>
+            <div class="edu-org">Microsoft</div>
+          </div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <div class="edu-body">
+            <h3>ILM Level 3 Award in First Line Management</h3>
+            <div class="edu-org">Institute of Leadership &amp; Management</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <div class="container">
+      <p class="section-label">Get in touch</p>
+      <h2>Let's talk</h2>
+      <p class="lead">
+        Open to IT Director, senior programme leadership, and interim roles.
+        Based in Raleigh, NC — available to work remotely or on-site.
+      </p>
+      <div class="contact-links">
+        <a class="contact-link" href="mailto:jonathan.k.whitehouse@gmail.com">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/>
+          </svg>
+          jonathan.k.whitehouse@gmail.com
+        </a>
+        <a class="contact-link" href="https://linkedin.com/in/jonathanwhitehouse" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/>
+            <rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>
+          </svg>
+          LinkedIn
+        </a>
+        <a class="contact-link" href="tel:7135829874">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.8a16 16 0 0 0 6.29 6.29l.95-.95a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          713 582 9874
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <p>© 2026 Jonathan Whitehouse · Built with plain HTML &amp; CSS</p>
+    </div>
+  </footer>
+
+  <script>
+    // Photo upload preview
+    document.getElementById('photo-input').addEventListener('change', function () {
+      const file = this.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const img = document.getElementById('profile-img');
+        img.src = e.target.result;
+        img.style.display = 'block';
+        document.getElementById('avatar-placeholder').style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Hamburger nav
+    const toggle   = document.querySelector('.nav-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    toggle.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      toggle.classList.toggle('open', open);
+      toggle.setAttribute('aria-expanded', open);
+    });
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      toggle.classList.remove('open');
+      toggle.setAttribute('aria-expanded', false);
+    }));
+    document.addEventListener('click', e => {
+      if (!e.target.closest('nav')) {
+        navLinks.classList.remove('open');
+        toggle.classList.remove('open');
+        toggle.setAttribute('aria-expanded', false);
+      }
+    });
+  </script>
+</body>
+</html>
